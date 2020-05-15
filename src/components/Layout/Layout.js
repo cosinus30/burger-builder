@@ -8,7 +8,6 @@ const Layout = (props) => {
             <div>
                 <p>Toolbar, sidebar, backdrop</p>
             </div>
-            {console.log(classes.Content)}
             <main className={classes.Content}>
                 {props.children}
             </main>
