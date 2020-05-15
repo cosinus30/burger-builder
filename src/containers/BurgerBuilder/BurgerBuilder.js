@@ -25,7 +25,6 @@ class BurgerBuilder extends Component {
 
     // type implies ingredient type
     addIngredientHandler = (type) => {
-
         const newCount = this.state.ingredients[type] + 1;
         const newPrice = this.state.price + PRICES[type];
         let oldIngredients = { ...this.state.ingredients };
@@ -36,13 +35,36 @@ class BurgerBuilder extends Component {
         })
     }
 
+    removeIngredientHandler = (type) => {
+        if (this.state.ingredients[type] >= 1) {
+            let newCount, newPrice;
+            newCount = this.state.ingredients[type] - 1;
+            newPrice = this.state.price - PRICES[type];
+            let oldIngredients = { ...this.state.ingredients };
+            oldIngredients[type] = newCount;
+            this.setState({
+                price: newPrice,
+                ingredients: oldIngredients,
+            })
+        }
+    }
+
 
     render() {
+        const disabledButtons = { ...this.state.ingredients };
+        for (let key in disabledButtons) {
+            disabledButtons[key] = disabledButtons[key] <= 0;
+        }
+
         return (
             <React.Fragment>
                 {console.log(this.state)}
                 <Burger ingredients={this.state.ingredients}></Burger>
-                <BuildControls addedHandler={this.addIngredientHandler} />
+                <BuildControls
+                    price={this.state.price}
+                    addedHandler={this.addIngredientHandler}
+                    removeHandler={this.removeIngredientHandler}
+                    disabledButtons={disabledButtons} />
             </React.Fragment>
         )
     }
