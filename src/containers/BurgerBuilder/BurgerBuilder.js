@@ -104,32 +104,38 @@ class BurgerBuilder extends Component {
 
         let burger = this.state.error ? <p>There is a problem</p> : <Spinner />
         if (this.state.ingredients) {
-            burger = (<React.Fragment>
-                <Burger ingredients={this.state.ingredients}></Burger>
-                <BuildControls
-                    price={this.state.price}
-                    addedHandler={this.addIngredientHandler}
-                    removeHandler={this.removeIngredientHandler}
-                    disabledButtons={disabledButtons}
-                    purchasibility={this.state.purchasable}
-                    ordered={this.purchaseHandler}
-                />
-            </React.Fragment>)
-            orderSummary = <OrderSummary
-                ingredients={this.state.ingredients} price={this.state.price} purchaseContinued={this.purchaseContinueHandler} purchaseCanceled={this.purchaseCancelHandler} />
+            burger = (
+                <React.Fragment>
+                    <Burger ingredients={this.state.ingredients}></Burger>
+                    <BuildControls
+                        price={this.state.price}
+                        addedHandler={this.addIngredientHandler}
+                        removeHandler={this.removeIngredientHandler}
+                        disabledButtons={disabledButtons}
+                        purchasibility={this.state.purchasable}
+                        ordered={this.purchaseHandler}
+                    />
+                </React.Fragment>)
+            orderSummary = (
+                <OrderSummary
+                    ingredients={this.state.ingredients} price={this.state.price} purchaseContinued={this.purchaseContinueHandler} purchaseCanceled={this.purchaseCancelHandler}
+                />)
         }
         if (this.state.loading) {
             orderSummary = <Spinner />
         }
+        let modal = (
+            <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
+                {orderSummary}
+            </Modal>)
+        if (!this.state.purchasing) {
+            modal = null
+        }
 
         return (
             <React.Fragment>
-                <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
-                    {orderSummary}
-                </Modal>
+                {modal}
                 {burger}
-
-
             </React.Fragment>
         )
     }
