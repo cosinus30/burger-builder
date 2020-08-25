@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Modal from '../../components/UI/Modal/Modal'
 
 
-const WithErroHandler = (WrappedComponent, axios) => {
+const WithErrorHandler = (WrappedComponent, axios) => {
     return class extends Component {
         state = {
             error: null,
@@ -45,4 +45,4 @@ const WithErroHandler = (WrappedComponent, axios) => {
 
 }
 
-export default WithErroHandler;
+export default WithErrorHandler;
