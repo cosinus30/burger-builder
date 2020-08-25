@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 
 import Burger from '../../components/Burger/Burger'
 import BuildControls from '../../components/Burger/BuildControls/BuildControls'
-
+import Modal from '../../components/UI/Modal/Modal'
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
+import axios from '../../axios-orders';
+import Spinner from '../../components/UI/Spinner/Spinner';
+import withErrorHandler from '../../hoc/withErrorHandler/WithErrorHandler'
 
 const PRICES = {
     salad: 0.25,
@@ -14,15 +18,12 @@ const PRICES = {
 class BurgerBuilder extends Component {
 
     state = {
-        ingredients: {
-            salad: 0,
-            bacon: 0,
-            cheese: 0,
-            meat: 0,
-        },
+        ingredients: null,
         price: 3.0,
         purchasable: false,
-
+        purchasing: false,
+        loading: false,
+        error: false,
     }
 
     updatePurchasability = (ingredients) => {
@@ -61,26 +62,94 @@ class BurgerBuilder extends Component {
 
     }
 
+    purchaseHandler = () => {
+        this.setState({ purchasing: true })
+    }
+
+    purchaseCancelHandler = () => {
+        this.setState({ purchasing: false });
+    }
+
+    purchaseContinueHandler = () => {
+        const queryParams = []
+        for (let i in this.state.ingredients) {
+            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
+        }
+        const queryString = queryParams.join('&')
+        this.props.history.push({
+            pathname: '/checkout',
+            search: '?' + queryString
+        })
+        // this.setState({ loading: true })
+        // const order = {
+        //     ingredients: this.state.ingredients,
+        //     price: this.state.price,
+        //     customer: {
+        //         name: 'Yunus Kerem Turk',
+        //         address: {
+        //             street: 'Teststreet 1',
+        //             zipcode: '20000',
+        //             country: 'Turkey'
+        //         },
+        //         email: 'test@test.com'
+        //     },
+        //     deliveryMethod: 'fastest',
+        // }
+        // axios.post('/orders.json', order)
+        //     .then((response) => { this.setState({ loading: false, purchasing: false }) })
+        //     .catch((error) => { this.setState({ loading: false, purchasing: false }) })
+    }
+
+    componentDidMount() {
+
+        console.log(this.props)
+        axios.get('https://react-burger-app-2e4de.firebaseio.com/ingredients.json')
+            .then((response) => {
+                this.setState({ ingredients: response.data })
+            })
+            .catch(error => {
+                this.setState({ error: true })
+            })
+    }
 
     render() {
         const disabledButtons = { ...this.state.ingredients };
         for (let key in disabledButtons) {
             disabledButtons[key] = disabledButtons[key] <= 0;
         }
+        let orderSummary = null;
 
-        return (
-            <React.Fragment>
-                {console.log(this.state)}
+        let burger = this.state.error ? <p>There is a problem</p> : <Spinner />
+        if (this.state.ingredients) {
+            burger = (<React.Fragment>
                 <Burger ingredients={this.state.ingredients}></Burger>
                 <BuildControls
                     price={this.state.price}
                     addedHandler={this.addIngredientHandler}
                     removeHandler={this.removeIngredientHandler}
                     disabledButtons={disabledButtons}
-                    purchasibility={this.state.purchasable} />
+                    purchasibility={this.state.purchasable}
+                    ordered={this.purchaseHandler}
+                />
+            </React.Fragment>)
+            orderSummary = <OrderSummary
+                ingredients={this.state.ingredients} price={this.state.price} purchaseContinued={this.purchaseContinueHandler} purchaseCanceled={this.purchaseCancelHandler} />
+        }
+        if (this.state.loading) {
+            orderSummary = <Spinner />
+        }
+
+        return (
+            <React.Fragment>
+                <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
+                    {orderSummary}
+                </Modal>
+                {burger}
+
+
             </React.Fragment>
         )
     }
 }
 
-export default BurgerBuilder;
+export default withErrorHandler(BurgerBuilder, axios);
