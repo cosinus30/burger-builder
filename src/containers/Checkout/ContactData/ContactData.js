@@ -7,6 +7,8 @@ import Input from '../../../components/UI/Input/Input'
 
 import classes from './ContactData.module.css'
 
+import { connect } from 'react-redux'
+
 const { Component } = require("react");
 
 class ContactData extends Component {
@@ -95,7 +97,6 @@ class ContactData extends Component {
         },
         formIsValid: false,
         loading: false,
-        ingredients: {},
 
     }
 
@@ -196,9 +197,14 @@ class ContactData extends Component {
             </div>
         )
     }
+}
 
-
+const mapStateToProps = state => {
+    return {
+        ingredients: state.ingredients,
+        price: state.totalPrice,
+    }
 
 }
 
-export default ContactData;
+export default connect(mapStateToProps)(ContactData);
