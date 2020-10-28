@@ -16,6 +16,12 @@ export const authSuccess = (token, userId, refreshToken) => {
     }
 }
 
+export const logout = () => {
+    return {
+        type: actionTypes.LOGOUT
+    }
+}
+
 export const authFail = (error) => {
     return {
         type: actionTypes.AUTH_FAIL,
@@ -45,7 +51,7 @@ export const auth = (email, password, isSignup) => {
             })
             .catch((error) => {
                 console.log(error);
-                dispatch(authFail(error));
+                dispatch(authFail(error.response.data.error));
             })
     }
 }
