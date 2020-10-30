@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import classes from './App.module.css';
 
 import Layout from './containers/Layout/Layout'
@@ -8,8 +8,14 @@ import { Route, Switch } from 'react-router-dom'
 import Orders from './containers/Orders/Orders';
 import Auth from './containers/Auth/Auth'
 import Logout from './containers/Auth/Logout.js/Logout';
+import { connect } from 'react-redux'
+import * as actions from './store/actions/index'
 
-function App() {
+function App(props) {
+
+  useEffect(() => {
+    props.onTryAutoSignIn();
+  })
   return (
     <div className={classes.App}>
       <Layout>
@@ -26,4 +32,11 @@ function App() {
   );
 }
 
-export default App;
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onTryAutoSignIn: () => dispatch(actions.checkAuthState()),
+  }
+}
+
+export default connect(null, mapDispatchToProps)(App);

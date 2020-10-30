@@ -17,6 +17,9 @@ export const authSuccess = (token, userId, refreshToken) => {
 }
 
 export const logout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userId');
     return {
         type: actionTypes.LOGOUT
     }
@@ -49,6 +52,7 @@ export const auth = (email, password, isSignup) => {
                 console.log(response);
                 localStorage.setItem('accessToken', response.data.idToken);
                 localStorage.setItem('refreshToken', response.data.refreshToken);
+                localStorage.setItem('userId', response.data.localId);
                 dispatch(authSuccess(response.data.idToken, response.data.localId, response.data.refreshToken));
             })
             .catch((error) => {
@@ -63,5 +67,25 @@ export const setAuthRedirectPath = (path) => {
         type: actionTypes.SET_AUTH_REDIRECT_PATH,
         path: path,
     }
+}
+
+export const checkAuthState = () => {
+    return (dispatch) => {
+        const accessToken = localStorage.getItem('accessToken');
+        const refreshToken = localStorage.getItem('refreshToken');
+        const userId = localStorage.getItem('userId');
+
+        if (accessToken != null && refreshToken != null && userId != null) {
+            dispatch(authSuccess(accessToken, userId, refreshToken));
+        }
+        else {
+            console.log(accessToken)
+            console.log(refreshToken)
+            console.log(userId)
+            dispatch(logout());
+        }    //If one of the fields is null make empty all of them
+
+    }
+
 }
 
