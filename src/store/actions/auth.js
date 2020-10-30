@@ -47,6 +47,8 @@ export const auth = (email, password, isSignup) => {
         axios.post(url, authData)
             .then((response) => {
                 console.log(response);
+                localStorage.setItem('accessToken', response.data.idToken);
+                localStorage.setItem('refreshToken', response.data.refreshToken);
                 dispatch(authSuccess(response.data.idToken, response.data.localId, response.data.refreshToken));
             })
             .catch((error) => {
