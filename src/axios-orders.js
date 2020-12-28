@@ -19,8 +19,6 @@ instance.interceptors.response.use((response) => {
             .then((response) => {
                 const newIdToken = response.data.id_token;
                 localStorage.setItem('accessToken', newIdToken);
-                //TODO Change auth param in the request
-                console.log(error.config);
                 const res = axios.request(error.config);
                 Promise.resolve(res);
             }) 
