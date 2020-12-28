@@ -10,6 +10,7 @@ import classes from './ContactData.module.css'
 import withErrorHandler from '../../../hoc/withErrorHandler/WithErrorHandler'
 
 import { connect } from 'react-redux'
+import { checkValidity } from '../../../shared/utility';
 
 const { Component } = require("react");
 
@@ -102,25 +103,6 @@ class ContactData extends Component {
 
     }
 
-    checkValidity = (value, rules) => {
-        let isValid = true;
-
-        if (rules.required) {
-            isValid = value.trim() !== '' && isValid;
-        }
-
-        if (rules.minLenght) {
-            isValid = value.length >= rules.minLenght && isValid
-        }
-
-        if (rules.maxLength) {
-            isValid = value.length <= rules.minLenght && isValid
-        }
-
-        return isValid;
-
-    }
-
     orderHandler = (event) => {
         event.preventDefault()
         const formData = {};
@@ -146,7 +128,7 @@ class ContactData extends Component {
         }
 
         updatedFormElement.value = event.target.value;
-        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+        updatedFormElement.valid = checkValidity(updatedFormElement.value, updatedFormElement.validation);
         updatedFormElement.touched = true;
         updatedOrderForm[inputIdentifier] = updatedFormElement
 
