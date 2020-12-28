@@ -10,7 +10,7 @@ const NavigationItems = (props) => {
                 ? <NavigationItem link="/auth">Sign in</NavigationItem>
                 : (<React.Fragment>
                     <NavigationItem link="/orders">Orders</NavigationItem>
-                    <NavigationItem NavigationItem link="/logout">Logout</NavigationItem>
+                    <NavigationItem link="/logout">Logout</NavigationItem>
                 </React.Fragment>)
             }
         </ul>)
