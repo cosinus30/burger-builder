@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import classes from './Layout.module.css';
 import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
 import SideDrawer from '../../components/Navigation/SideDrawer/SideDrawer';
 
@@ -31,7 +30,7 @@ class Layout extends Component {
                         closed={this.sideDrawerClosedHandler}
                         isAuthenticated={this.props.isAuthenticated} />
                 </div>
-                <main className={classes.Content}>
+                <main>
                     {this.props.children}
                 </main>
             </React.Fragment>
