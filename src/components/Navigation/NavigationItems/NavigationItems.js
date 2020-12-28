@@ -3,7 +3,6 @@ import classes from './NavigationItems.module.css'
 import NavigationItem from './NavigationItem.js/NavigationItem'
 
 const NavigationItems = (props) => {
-    console.log(props);
     return (
         <ul className={classes.NavigationItems}>
             <NavigationItem link="/" >Burger Builder</NavigationItem>
