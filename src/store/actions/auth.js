@@ -1,5 +1,5 @@
 import * as actionTypes from './actionTypes'
-import axios from 'axios';
+import { authInstance } from '../../axios-orders';
 
 export const authStart = () => {
     return {
@@ -41,22 +41,20 @@ export const auth = (email, password, isSignup) => {
             returnSecureToken: true,
         }
 
-        let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyArgNSJKdmms1mQ836hc2N70L3Q3UU9Ct0';
+        let url = '/accounts:signUp?key=AIzaSyArgNSJKdmms1mQ836hc2N70L3Q3UU9Ct0';
 
         if (!isSignup) {
-            url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyArgNSJKdmms1mQ836hc2N70L3Q3UU9Ct0'
+            url = '/accounts:signInWithPassword?key=AIzaSyArgNSJKdmms1mQ836hc2N70L3Q3UU9Ct0'
         }
 
-        axios.post(url, authData)
+        authInstance.post(url, authData)
             .then((response) => {
-                console.log(response);
                 localStorage.setItem('accessToken', response.data.idToken);
                 localStorage.setItem('refreshToken', response.data.refreshToken);
                 localStorage.setItem('userId', response.data.localId);
                 dispatch(authSuccess(response.data.idToken, response.data.localId, response.data.refreshToken));
             })
             .catch((error) => {
-                console.log(error);
                 dispatch(authFail(error.response.data.error));
             })
     }
@@ -79,13 +77,8 @@ export const checkAuthState = () => {
             dispatch(authSuccess(accessToken, userId, refreshToken));
         }
         else {
-            console.log(accessToken)
-            console.log(refreshToken)
-            console.log(userId)
             dispatch(logout());
         }    //If one of the fields is null make empty all of them
-
     }
-
 }
 
